@@ -37,3 +37,25 @@ def test_select_bullets_respects_max_count():
     items = [_item("a", ["backend"]), _item("b", ["backend"]), _item("c", ["backend"])]
     result = select_bullets(items, tag_filter=["backend"], max_count=2, overrides={})
     assert len(result) == 2
+
+
+def test_select_bullets_handles_null_tags_on_item():
+    items = [{"id": "a", "tags": None, "text": {"es": "a", "en": "a"}}]
+    result = select_bullets(items, tag_filter=["backend"], max_count=None, overrides={})
+    assert result == []
+
+
+def test_select_bullets_handles_null_exclude_bullets_override():
+    items = [_item("a", ["backend"])]
+    result = select_bullets(
+        items, tag_filter=["backend"], max_count=None, overrides={"exclude_bullets": None}
+    )
+    assert [i["id"] for i in result] == ["a"]
+
+
+def test_select_bullets_handles_null_include_bullets_override():
+    items = [_item("a", ["frontend"])]
+    result = select_bullets(
+        items, tag_filter=["backend"], max_count=None, overrides={"include_bullets": None}
+    )
+    assert result == []
