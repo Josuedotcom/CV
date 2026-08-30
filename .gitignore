@@ -1,0 +1,22 @@
+# LaTeX build artifacts (compiled cv.pdf per application IS tracked; these intermediates are not)
+*.aux
+*.log
+*.out
+*.toc
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.bcf
+*.blg
+*.run.xml
+*.nav
+*.snm
+*.vrb
+
+# Local tooling state, not project content
+.atl/
+
+# OS / editor
+.DS_Store
+Thumbs.db
