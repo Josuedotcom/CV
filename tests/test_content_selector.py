@@ -1,0 +1,39 @@
+from scripts.content_selector import select_bullets
+
+
+def _item(id_, tags):
+    return {"id": id_, "tags": tags, "text": {"es": id_, "en": id_}}
+
+
+def test_select_bullets_filters_by_tag():
+    items = [_item("a", ["backend"]), _item("b", ["frontend"])]
+    result = select_bullets(items, tag_filter=["backend"], max_count=None, overrides={})
+    assert [i["id"] for i in result] == ["a"]
+
+
+def test_select_bullets_none_tag_filter_keeps_everything():
+    items = [_item("a", ["backend"]), _item("b", ["frontend"])]
+    result = select_bullets(items, tag_filter=None, max_count=None, overrides={})
+    assert [i["id"] for i in result] == ["a", "b"]
+
+
+def test_select_bullets_exclude_override_wins_over_tag_match():
+    items = [_item("a", ["backend"])]
+    result = select_bullets(
+        items, tag_filter=["backend"], max_count=None, overrides={"exclude_bullets": ["a"]}
+    )
+    assert result == []
+
+
+def test_select_bullets_include_override_adds_non_matching_item():
+    items = [_item("a", ["frontend"])]
+    result = select_bullets(
+        items, tag_filter=["backend"], max_count=None, overrides={"include_bullets": ["a"]}
+    )
+    assert [i["id"] for i in result] == ["a"]
+
+
+def test_select_bullets_respects_max_count():
+    items = [_item("a", ["backend"]), _item("b", ["backend"]), _item("c", ["backend"])]
+    result = select_bullets(items, tag_filter=["backend"], max_count=2, overrides={})
+    assert len(result) == 2
