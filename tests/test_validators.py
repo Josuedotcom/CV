@@ -1,8 +1,11 @@
+from pathlib import Path
+
 from scripts.validators import (
     check_unique_ids,
     check_bilingual_fields,
     check_override_ids_exist,
     check_tag_filters_match,
+    check_badge_images_exist,
 )
 
 
@@ -94,3 +97,26 @@ def test_check_tag_filters_match_handles_null_tags_on_item():
     items = [{"id": "a", "tags": None}]
     errors = check_tag_filters_match(profile, items)
     assert len(errors) == 1
+
+
+def test_check_badge_images_exist_passes_when_file_present(tmp_path):
+    (tmp_path / "assets" / "badges").mkdir(parents=True)
+    (tmp_path / "assets" / "badges" / "aws.png").write_bytes(b"fake-png")
+    certs = [{"id": "cert-aws", "badge_image": "assets/badges/aws.png"}]
+
+    assert check_badge_images_exist(certs, tmp_path) == []
+
+
+def test_check_badge_images_exist_reports_missing_file(tmp_path):
+    certs = [{"id": "cert-aws", "badge_image": "assets/badges/missing.png"}]
+
+    errors = check_badge_images_exist(certs, tmp_path)
+
+    assert len(errors) == 1
+    assert "cert-aws" in errors[0]
+    assert "missing.png" in errors[0]
+
+
+def test_check_badge_images_exist_ignores_certs_without_badge(tmp_path):
+    certs = [{"id": "cert-no-badge"}]
+    assert check_badge_images_exist(certs, tmp_path) == []

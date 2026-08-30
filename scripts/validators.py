@@ -1,3 +1,6 @@
+from pathlib import Path
+
+
 def check_unique_ids(items: list[dict]) -> list[str]:
     seen: dict[str, str] = {}
     errors = []
@@ -57,5 +60,18 @@ def check_tag_filters_match(profile: dict, items: list[dict]) -> list[str]:
             errors.append(
                 f"Profile '{profile_name}' section '{section.get('type')}' "
                 f"tag_filter {tag_filter} matches zero items"
+            )
+    return errors
+
+
+def check_badge_images_exist(certifications: list[dict], repo_root: Path) -> list[str]:
+    errors = []
+    for cert in certifications:
+        badge_path = cert.get("badge_image")
+        if not badge_path:
+            continue
+        if not (repo_root / badge_path).is_file():
+            errors.append(
+                f"Certification '{cert.get('id')}' references missing badge image: {badge_path}"
             )
     return errors
