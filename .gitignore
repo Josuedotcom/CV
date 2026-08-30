@@ -17,6 +17,12 @@
 # Local tooling state, not project content
 .atl/
 
+# Python (uv-managed environment)
+.venv/
+.pytest_cache/
+__pycache__/
+*.pyc
+
 # OS / editor
 .DS_Store
 Thumbs.db
