@@ -34,7 +34,7 @@ def check_bilingual_fields(items: list[dict], field_names: list[str]) -> list[st
 
 def check_override_ids_exist(application_config: dict, known_ids: set[str]) -> list[str]:
     errors = []
-    overrides = application_config.get("overrides", {})
+    overrides = application_config.get("overrides") or {}
     source = application_config.get("_source", "<unknown>")
     for key in ("include_bullets", "exclude_bullets"):
         for bullet_id in overrides.get(key, []):

@@ -55,3 +55,8 @@ def test_check_override_ids_exist_reports_unknown_id():
 def test_check_override_ids_exist_handles_missing_overrides_key():
     config = {"_source": "app/config.yaml"}
     assert check_override_ids_exist(config, known_ids={"a"}) == []
+
+
+def test_check_override_ids_exist_handles_null_overrides_value():
+    config = {"_source": "app/config.yaml", "overrides": None}
+    assert check_override_ids_exist(config, known_ids={"a"}) == []
