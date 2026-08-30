@@ -43,3 +43,19 @@ def check_override_ids_exist(application_config: dict, known_ids: set[str]) -> l
                     f"{source}: overrides.{key} references unknown id '{bullet_id}'"
                 )
     return errors
+
+
+def check_tag_filters_match(profile: dict, items: list[dict]) -> list[str]:
+    errors = []
+    profile_name = profile.get("name", profile.get("_source", "<unknown>"))
+    for section in profile.get("sections", []):
+        tag_filter = section.get("tag_filter")
+        if not tag_filter:
+            continue
+        matches = any(set(item.get("tags", [])) & set(tag_filter) for item in items)
+        if not matches:
+            errors.append(
+                f"Profile '{profile_name}' section '{section.get('type')}' "
+                f"tag_filter {tag_filter} matches zero items"
+            )
+    return errors
