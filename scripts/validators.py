@@ -48,11 +48,11 @@ def check_override_ids_exist(application_config: dict, known_ids: set[str]) -> l
 def check_tag_filters_match(profile: dict, items: list[dict]) -> list[str]:
     errors = []
     profile_name = profile.get("name", profile.get("_source", "<unknown>"))
-    for section in profile.get("sections", []):
+    for section in profile.get("sections") or []:
         tag_filter = section.get("tag_filter")
         if not tag_filter:
             continue
-        matches = any(set(item.get("tags", [])) & set(tag_filter) for item in items)
+        matches = any(set(item.get("tags") or []) & set(tag_filter) for item in items)
         if not matches:
             errors.append(
                 f"Profile '{profile_name}' section '{section.get('type')}' "

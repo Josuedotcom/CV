@@ -1,4 +1,9 @@
-from scripts.validators import check_unique_ids, check_bilingual_fields
+from scripts.validators import (
+    check_unique_ids,
+    check_bilingual_fields,
+    check_override_ids_exist,
+    check_tag_filters_match,
+)
 
 
 def test_check_unique_ids_returns_no_errors_when_all_unique():
@@ -36,9 +41,6 @@ def test_check_bilingual_fields_ignores_fields_not_present_on_item():
     assert check_bilingual_fields(items, ["text", "description"]) == []
 
 
-from scripts.validators import check_override_ids_exist
-
-
 def test_check_override_ids_exist_passes_when_all_known():
     config = {"_source": "app/config.yaml", "overrides": {"include_bullets": ["a"]}}
     assert check_override_ids_exist(config, known_ids={"a", "b"}) == []
@@ -62,9 +64,6 @@ def test_check_override_ids_exist_handles_null_overrides_value():
     assert check_override_ids_exist(config, known_ids={"a"}) == []
 
 
-from scripts.validators import check_tag_filters_match
-
-
 def test_check_tag_filters_match_passes_when_tag_present():
     profile = {"name": "backend", "sections": [{"type": "experience", "tag_filter": ["backend"]}]}
     items = [{"id": "a", "tags": ["backend"]}]
@@ -83,3 +82,15 @@ def test_check_tag_filters_match_reports_zero_matches():
 def test_check_tag_filters_match_ignores_sections_without_tag_filter():
     profile = {"name": "backend", "sections": [{"type": "education"}]}
     assert check_tag_filters_match(profile, items=[]) == []
+
+
+def test_check_tag_filters_match_handles_null_sections():
+    profile = {"name": "backend", "sections": None}
+    assert check_tag_filters_match(profile, items=[]) == []
+
+
+def test_check_tag_filters_match_handles_null_tags_on_item():
+    profile = {"name": "backend", "sections": [{"type": "experience", "tag_filter": ["backend"]}]}
+    items = [{"id": "a", "tags": None}]
+    errors = check_tag_filters_match(profile, items)
+    assert len(errors) == 1
