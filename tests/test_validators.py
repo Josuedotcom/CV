@@ -34,3 +34,24 @@ def test_check_bilingual_fields_reports_missing_language():
 def test_check_bilingual_fields_ignores_fields_not_present_on_item():
     items = [{"id": "a", "_source": "f.yaml", "text": {"es": "Hola", "en": "Hello"}}]
     assert check_bilingual_fields(items, ["text", "description"]) == []
+
+
+from scripts.validators import check_override_ids_exist
+
+
+def test_check_override_ids_exist_passes_when_all_known():
+    config = {"_source": "app/config.yaml", "overrides": {"include_bullets": ["a"]}}
+    assert check_override_ids_exist(config, known_ids={"a", "b"}) == []
+
+
+def test_check_override_ids_exist_reports_unknown_id():
+    config = {"_source": "app/config.yaml", "overrides": {"exclude_bullets": ["ghost"]}}
+    errors = check_override_ids_exist(config, known_ids={"a"})
+    assert len(errors) == 1
+    assert "ghost" in errors[0]
+    assert "app/config.yaml" in errors[0]
+
+
+def test_check_override_ids_exist_handles_missing_overrides_key():
+    config = {"_source": "app/config.yaml"}
+    assert check_override_ids_exist(config, known_ids={"a"}) == []
