@@ -87,3 +87,35 @@ def test_run_validation_catches_unknown_override_id(tmp_path):
     errors = run_validation(tmp_path)
 
     assert any("ghost-id" in e for e in errors)
+
+
+def test_run_validation_handles_null_skills_key(tmp_path):
+    _write_minimal_repo(tmp_path)
+    # `skills:` present but with no value parses as `{"skills": None}` in YAML.
+    (tmp_path / "data" / "skills.yaml").write_text("skills:\n", encoding="utf-8")
+
+    # Should not raise (e.g. TypeError from `None` being treated as a list);
+    # a clean list of errors (empty or not) is the only acceptable outcome.
+    errors = run_validation(tmp_path)
+
+    assert isinstance(errors, list)
+
+
+def test_run_validation_handles_null_bullets_key(tmp_path):
+    _write_minimal_repo(tmp_path)
+    # An experience entry with `bullets:` present but no value parses as
+    # `{"bullets": None, ...}` in YAML.
+    (tmp_path / "data" / "experience" / "acme.yaml").write_text(
+        textwrap.dedent(
+            """
+            company: {es: Acme, en: Acme}
+            role: {es: Dev, en: Dev}
+            bullets:
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    errors = run_validation(tmp_path)
+
+    assert isinstance(errors, list)

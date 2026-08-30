@@ -16,7 +16,7 @@ REPO_ROOT = Path(__file__).resolve().parent.parent
 def flatten_bullets(experience_entries: list[dict]) -> list[dict]:
     bullets = []
     for entry in experience_entries:
-        for bullet in entry.get("bullets", []):
+        for bullet in entry.get("bullets") or []:
             bullet = dict(bullet)
             bullet.setdefault("_source", entry.get("_source"))
             bullets.append(bullet)
@@ -26,12 +26,12 @@ def flatten_bullets(experience_entries: list[dict]) -> list[dict]:
 def collect_all_ided_items(repo_root: Path) -> list[dict]:
     experience = load_yaml_dir(repo_root / "data" / "experience")
     bullets = flatten_bullets(experience)
-    skills = load_yaml_file(repo_root / "data" / "skills.yaml").get("skills", [])
-    projects = load_yaml_file(repo_root / "data" / "projects.yaml").get("projects", [])
-    education = load_yaml_file(repo_root / "data" / "education.yaml").get("education", [])
+    skills = load_yaml_file(repo_root / "data" / "skills.yaml").get("skills") or []
+    projects = load_yaml_file(repo_root / "data" / "projects.yaml").get("projects") or []
+    education = load_yaml_file(repo_root / "data" / "education.yaml").get("education") or []
     certifications = load_yaml_file(repo_root / "data" / "certifications.yaml").get(
-        "certifications", []
-    )
+        "certifications"
+    ) or []
     return bullets + skills + projects + education + certifications
 
 
@@ -43,8 +43,8 @@ def run_validation(repo_root: Path) -> list[str]:
     errors += check_bilingual_fields(all_items, ["text", "name", "description", "degree"])
 
     certifications = load_yaml_file(repo_root / "data" / "certifications.yaml").get(
-        "certifications", []
-    )
+        "certifications"
+    ) or []
     errors += check_badge_images_exist(certifications, repo_root)
 
     known_ids = {item["id"] for item in all_items if "id" in item}
