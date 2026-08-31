@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.generate import generate
+from scripts.generate import generate, main
 
 
 def _write_repo(root: Path) -> None:
@@ -173,3 +173,14 @@ def test_generate_certifications_section_resolves_lang_and_badge_path(tmp_path):
     assert ":\\" not in content  # no Windows absolute path
     assert "C:/" not in content  # no absolute path in posix form
     assert "AWS Solutions Architect" in content
+
+
+def test_main_reports_non_runtime_errors_cleanly(monkeypatch, capsys):
+    # A missing application folder raises FileNotFoundError, not RuntimeError:
+    # the CLI boundary must still print a message and exit 1, never traceback.
+    monkeypatch.setattr("sys.argv", ["generate.py", "no-such-application", "--no-compile"])
+
+    exit_code = main()
+
+    assert exit_code == 1
+    assert capsys.readouterr().out.strip() != ""

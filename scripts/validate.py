@@ -8,6 +8,7 @@ from scripts.validators import (
     check_override_ids_exist,
     check_tag_filters_match,
     check_badge_images_exist,
+    check_application_config_valid,
 )
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -63,6 +64,7 @@ def run_validation(repo_root: Path) -> list[str]:
         for config_path in sorted(applications_dir.glob("*/config.yaml")):
             config = load_yaml_file(config_path)
             errors += check_override_ids_exist(config, known_ids)
+            errors += check_application_config_valid(config, repo_root)
 
     return errors
 

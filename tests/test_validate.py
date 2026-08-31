@@ -7,7 +7,9 @@ from scripts.validate import run_validation
 def _write_minimal_repo(root: Path) -> None:
     (root / "data" / "experience").mkdir(parents=True)
     (root / "profiles").mkdir()
+    (root / "templates").mkdir()
     (root / "applications" / "acme-2026-01-01").mkdir(parents=True)
+    (root / "templates" / "ats.tex.j2").write_text("", encoding="utf-8")
 
     (root / "data" / "experience" / "acme.yaml").write_text(
         textwrap.dedent(
@@ -42,6 +44,7 @@ def _write_minimal_repo(root: Path) -> None:
             """
             company: Acme
             profile: backend
+            template: ats
             lang: es
             overrides:
               include_bullets: [exp-acme-1]
@@ -76,6 +79,7 @@ def test_run_validation_catches_unknown_override_id(tmp_path):
             """
             company: Acme
             profile: backend
+            template: ats
             lang: es
             overrides:
               include_bullets: [ghost-id]
@@ -87,6 +91,28 @@ def test_run_validation_catches_unknown_override_id(tmp_path):
     errors = run_validation(tmp_path)
 
     assert any("ghost-id" in e for e in errors)
+
+
+def test_run_validation_catches_typo_in_application_config(tmp_path):
+    _write_minimal_repo(tmp_path)
+    config_file = tmp_path / "applications" / "acme-2026-01-01" / "config.yaml"
+    config_file.write_text(
+        textwrap.dedent(
+            """
+            company: Acme
+            profile: backned
+            template: atss
+            lang: fr
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    errors = run_validation(tmp_path)
+
+    assert any("backned" in e for e in errors), errors
+    assert any("atss" in e for e in errors), errors
+    assert any("fr" in e for e in errors), errors
 
 
 def test_run_validation_catches_tag_filter_matching_only_another_section_type(tmp_path):

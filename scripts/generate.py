@@ -156,7 +156,9 @@ def main() -> int:
     should_compile = "--no-compile" not in args
     try:
         generate(application_name, compile=should_compile)
-    except RuntimeError as exc:
+    except Exception as exc:
+        # Defense in depth at the CLI boundary: any failure reaches the user as a
+        # readable message rather than an unhandled traceback.
         print(str(exc))
         return 1
     suffix = "cv.tex and cv.pdf" if should_compile else "cv.tex"

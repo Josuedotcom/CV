@@ -1,5 +1,7 @@
 from pathlib import Path
 
+VALID_LANGS = ("es", "en")
+
 
 def check_unique_ids(items: list[dict]) -> list[str]:
     seen: dict[str, str] = {}
@@ -45,6 +47,32 @@ def check_override_ids_exist(application_config: dict, known_ids: set[str]) -> l
                 errors.append(
                     f"{source}: overrides.{key} references unknown id '{bullet_id}'"
                 )
+    return errors
+
+
+def check_application_config_valid(application_config: dict, repo_root: Path) -> list[str]:
+    """Report typos in an application config before they become raw tracebacks."""
+    errors = []
+    source = application_config.get("_source", "<unknown>")
+
+    lang = application_config.get("lang")
+    if lang not in VALID_LANGS:
+        errors.append(
+            f"{source}: lang '{lang}' is not one of {list(VALID_LANGS)}"
+        )
+
+    profile = application_config.get("profile")
+    if not profile or not (repo_root / "profiles" / f"{profile}.yaml").is_file():
+        errors.append(
+            f"{source}: profile '{profile}' has no matching file profiles/{profile}.yaml"
+        )
+
+    template = application_config.get("template")
+    if not template or not (repo_root / "templates" / f"{template}.tex.j2").is_file():
+        errors.append(
+            f"{source}: template '{template}' has no matching file templates/{template}.tex.j2"
+        )
+
     return errors
 
 

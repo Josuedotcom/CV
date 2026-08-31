@@ -6,7 +6,15 @@ from scripts.validators import (
     check_override_ids_exist,
     check_tag_filters_match,
     check_badge_images_exist,
+    check_application_config_valid,
 )
+
+
+def _write_config_deps(root: Path) -> None:
+    (root / "profiles").mkdir(parents=True, exist_ok=True)
+    (root / "templates").mkdir(parents=True, exist_ok=True)
+    (root / "profiles" / "backend.yaml").write_text("name: backend\n", encoding="utf-8")
+    (root / "templates" / "ats.tex.j2").write_text("", encoding="utf-8")
 
 
 def test_check_unique_ids_returns_no_errors_when_all_unique():
@@ -146,3 +154,73 @@ def test_check_badge_images_exist_reports_missing_file(tmp_path):
 def test_check_badge_images_exist_ignores_certs_without_badge(tmp_path):
     certs = [{"id": "cert-no-badge"}]
     assert check_badge_images_exist(certs, tmp_path) == []
+
+
+def test_check_application_config_valid_passes_on_good_config(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {
+        "_source": "applications/acme/config.yaml",
+        "lang": "es",
+        "profile": "backend",
+        "template": "ats",
+    }
+
+    assert check_application_config_valid(config, tmp_path) == []
+
+
+def test_check_application_config_valid_reports_unknown_lang(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {
+        "_source": "applications/acme/config.yaml",
+        "lang": "fr",
+        "profile": "backend",
+        "template": "ats",
+    }
+
+    errors = check_application_config_valid(config, tmp_path)
+
+    assert len(errors) == 1
+    assert "lang" in errors[0]
+    assert "fr" in errors[0]
+    assert "applications/acme/config.yaml" in errors[0]
+
+
+def test_check_application_config_valid_reports_missing_profile_file(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {
+        "_source": "applications/acme/config.yaml",
+        "lang": "es",
+        "profile": "backned",
+        "template": "ats",
+    }
+
+    errors = check_application_config_valid(config, tmp_path)
+
+    assert len(errors) == 1
+    assert "backned" in errors[0]
+    assert "applications/acme/config.yaml" in errors[0]
+
+
+def test_check_application_config_valid_reports_missing_template_file(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {
+        "_source": "applications/acme/config.yaml",
+        "lang": "es",
+        "profile": "backend",
+        "template": "atss",
+    }
+
+    errors = check_application_config_valid(config, tmp_path)
+
+    assert len(errors) == 1
+    assert "atss" in errors[0]
+    assert "applications/acme/config.yaml" in errors[0]
+
+
+def test_check_application_config_valid_reports_all_missing_keys(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {"_source": "applications/acme/config.yaml"}
+
+    errors = check_application_config_valid(config, tmp_path)
+
+    assert len(errors) == 3
