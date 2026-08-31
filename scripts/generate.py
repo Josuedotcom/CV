@@ -74,6 +74,7 @@ def build_named_section(
 def build_context(repo_root: Path, config: dict, profile: dict) -> dict:
     lang = config["lang"]
     overrides = config.get("overrides") or {}
+    personal = load_yaml_file(repo_root / "data" / "profile.yaml")
     sections: dict = {}
     for section in profile.get("sections") or []:
         section_type = section["type"]
@@ -107,6 +108,11 @@ def build_context(repo_root: Path, config: dict, profile: dict) -> dict:
         "lang": lang,
         "company": config.get("company"),
         "role_applied": config.get("role_applied"),
+        "name": personal.get("name"),
+        "title": resolve_lang(personal.get("title"), lang),
+        "email": personal.get("email"),
+        "phone": personal.get("phone"),
+        "summary": resolve_lang(personal.get("summary"), lang),
         **{key: sections.get(key, []) for key in
            ("experience", "skills", "projects", "education", "certifications")},
     }

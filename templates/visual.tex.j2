@@ -12,9 +12,15 @@
 \begin{document}
 
 \begin{center}
-{\huge \textbf{Your Name}}\\[4pt]
-your.email@example.com
+{\huge \textbf{\VAR{name|latex}}}\\[4pt]
+\VAR{title|latex}\\[2pt]
+\VAR{email|latex} -- \VAR{phone|latex}
 \end{center}
+
+\BLOCK{if summary}
+\section*{Summary}
+\VAR{summary|latex}
+\BLOCK{endif}
 
 \BLOCK{if experience}
 \section*{Experience}
@@ -42,6 +48,13 @@ your.email@example.com
 \BLOCK{if skills}
 \section*{Skills}
 \VAR{(skills|map(attribute='name')|join(', '))|latex}
+\BLOCK{endif}
+
+\BLOCK{if education}
+\section*{Education}
+\BLOCK{for item in education}
+\VAR{item.degree|latex} --- \VAR{item.name|latex}\\
+\BLOCK{endfor}
 \BLOCK{endif}
 
 \end{document}

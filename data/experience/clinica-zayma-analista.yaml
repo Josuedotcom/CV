@@ -1,0 +1,27 @@
+company: {es: "Clínica Zayma S.A.S", en: "Clínica Zayma S.A.S"}
+role:
+  es: "Analista de Datos y Automatización de Procesos"
+  en: "Data Analyst and Process Automation"
+start_date: "2024-10"
+end_date: "2025-07"
+bullets:
+  - id: exp-zayma-analista-dashboards
+    tags: [data-analyst, power-bi]
+    text:
+      es: "Desarrollé tableros en Power BI y modelos de datos que apoyaban la toma de decisiones estratégicas."
+      en: "Built Power BI dashboards and data models that supported strategic decision-making."
+  - id: exp-zayma-analista-automation
+    tags: [data-analyst, automation, sql, python]
+    text:
+      es: "Optimicé procesos mediante automatización con Power Automate, n8n y Python, además de la extracción y limpieza de datos en SQL."
+      en: "Optimized processes through automation with Power Automate, n8n, and Python, along with SQL-based data extraction and cleaning."
+  - id: exp-zayma-analista-ai
+    tags: [data-analyst, ai-ml]
+    text:
+      es: "Implementé soluciones de inteligencia artificial para potenciar el análisis y la eficiencia operativa."
+      en: "Implemented AI-based solutions to enhance analysis and operational efficiency."
+  - id: exp-zayma-analista-apps
+    tags: [data-analyst, apps]
+    text:
+      es: "Creé aplicaciones basadas en el entorno de Microsoft (Power Apps) y en VibeCoding (Lovable)."
+      en: "Built applications using the Microsoft ecosystem (Power Apps) and VibeCoding (Lovable)."

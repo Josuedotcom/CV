@@ -1,4 +1,22 @@
 skills:
+  - id: skill-power-bi
+    tags: [data-analyst, power-bi]
+    name: {es: "Power BI Avanzado", en: "Advanced Power BI"}
+  - id: skill-excel
+    tags: [data-analyst, excel]
+    name: {es: "Excel Avanzado", en: "Advanced Excel"}
+  - id: skill-sql
+    tags: [data-analyst, sql]
+    name: {es: "SQL Intermedio", en: "Intermediate SQL"}
   - id: skill-python
-    tags: [backend]
-    name: {es: "Python", en: "Python"}
+    tags: [data-analyst, python]
+    name: {es: "Python Intermedio (pandas, matplotlib, seaborn)", en: "Intermediate Python (pandas, matplotlib, seaborn)"}
+  - id: skill-automation
+    tags: [data-analyst, automation]
+    name: {es: "Automatización de procesos (Power Automate, n8n)", en: "Process automation (Power Automate, n8n)"}
+  - id: skill-ml
+    tags: [data-analyst, ai-ml]
+    name: {es: "Machine Learning Básico", en: "Basic Machine Learning"}
+  - id: skill-apps
+    tags: [data-analyst, apps]
+    name: {es: "Creación de Apps (Power Apps, Lovable, Supabase)", en: "App development (Power Apps, Lovable, Supabase)"}

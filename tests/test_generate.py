@@ -27,6 +27,18 @@ def _write_repo(root: Path) -> None:
         ),
         encoding="utf-8",
     )
+    (root / "data" / "profile.yaml").write_text(
+        textwrap.dedent(
+            """
+            name: "Test Person"
+            title: {es: "Rol", en: "Role"}
+            email: "test@example.com"
+            phone: "000"
+            summary: {es: "Resumen", en: "Summary"}
+            """
+        ),
+        encoding="utf-8",
+    )
     (root / "data" / "skills.yaml").write_text("skills: []\n", encoding="utf-8")
     (root / "data" / "projects.yaml").write_text("projects: []\n", encoding="utf-8")
     (root / "data" / "education.yaml").write_text("education: []\n", encoding="utf-8")

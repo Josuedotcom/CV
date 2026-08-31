@@ -1,7 +1,31 @@
 certifications:
-  - id: cert-sample-cloud
-    tags: [backend]
-    name: {es: "Certificación de Ejemplo", en: "Sample Certification"}
-    issuer: "Sample Issuer"
-    date: "2023-05"
-    badge_image: assets/badges/sample-badge.png
+  - id: cert-fundamentos-ia
+    tags: [data-analyst]
+    name: {es: "Fundamentos de IA", en: "AI Fundamentals"}
+    issuer: "Google"
+    date: "2024-09"
+  - id: cert-fundamentos-gestion-proyectos
+    tags: [data-analyst]
+    name: {es: "Fundamentos de Gestión de Proyectos", en: "Project Management Fundamentals"}
+    issuer: "Google"
+    date: "2024-08"
+  - id: cert-prueba-habilidades-digitales
+    tags: [data-analyst]
+    name: {es: "Prueba de Habilidades Digitales en Data Science e Inteligencia", en: "Digital Skills Assessment in Data Science and Intelligence"}
+    issuer: "Universidad de Antioquia"
+    date: "2023-12"
+  - id: cert-fundamentos-python
+    tags: [data-analyst]
+    name: {es: "Fundamentos de Python", en: "Python Fundamentals"}
+    issuer: "Platzi"
+    date: "2023-08"
+  - id: cert-fundamentos-analitica-linkedin
+    tags: [data-analyst]
+    name: {es: "Fundamentos de Analítica de Datos", en: "Data Analytics Fundamentals"}
+    issuer: "LinkedIn - Microsoft"
+    date: "2023-06"
+  - id: cert-fundamentos-analitica-correlation-one
+    tags: [data-analyst]
+    name: {es: "Fundamentos en Analítica de Datos", en: "Data Analytics Fundamentals"}
+    issuer: "Correlation One"
+    date: "2022-12"

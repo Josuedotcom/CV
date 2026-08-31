@@ -1,0 +1,17 @@
+company: {es: "Clínica Zayma S.A.S", en: "Clínica Zayma S.A.S"}
+role:
+  es: "Aprendiz de Data en Gestión Humana"
+  en: "Data Apprentice, Human Resources"
+start_date: "2024-03"
+end_date: "2024-09"
+bullets:
+  - id: exp-zayma-aprendiz-rpa
+    tags: [data-analyst, automation]
+    text:
+      es: "Automaticé procesos con Power Automate (RPA), optimizando tareas repetitivas y mejorando la eficiencia operativa."
+      en: "Automated processes with Power Automate (RPA), streamlining repetitive tasks and improving operational efficiency."
+  - id: exp-zayma-aprendiz-dashboards
+    tags: [data-analyst, power-bi, excel]
+    text:
+      es: "Desarrollé informes y dashboards en Power BI junto con análisis avanzados en Excel, entregando datos clave para apoyar decisiones estratégicas en el área de gestión humana."
+      en: "Developed reports and dashboards in Power BI along with advanced Excel analysis, delivering key data to support strategic decisions in the human resources area."

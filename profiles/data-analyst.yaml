@@ -1,10 +1,9 @@
-name: backend
+name: data-analyst
 sections:
   - type: experience
-    tag_filter: [backend]
+    tag_filter: [data-analyst]
     max_bullets_per_entry: 4
   - type: skills
-    tag_filter: [backend]
+    tag_filter: [data-analyst]
   - type: education
   - type: certifications
-    tag_filter: [backend]

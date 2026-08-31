@@ -9,9 +9,15 @@
 \begin{document}
 
 \begin{center}
-{\Large \textbf{Your Name}}\\
-your.email@example.com
+{\Large \textbf{\VAR{name|latex}}}\\
+\VAR{title|latex}\\
+\VAR{email|latex} -- \VAR{phone|latex}
 \end{center}
+
+\BLOCK{if summary}
+\section*{Summary}
+\VAR{summary|latex}
+\BLOCK{endif}
 
 \BLOCK{if experience}
 \section*{Experience}
@@ -33,7 +39,7 @@ your.email@example.com
 \BLOCK{if education}
 \section*{Education}
 \BLOCK{for item in education}
-\VAR{item.degree|latex} --- \VAR{item.name|latex}
+\VAR{item.degree|latex} --- \VAR{item.name|latex}\\
 \BLOCK{endfor}
 \BLOCK{endif}
 
@@ -41,6 +47,13 @@ your.email@example.com
 \section*{Projects}
 \BLOCK{for project in projects}
 \textbf{\VAR{project.name|latex}}: \VAR{project.description|latex}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if certifications}
+\section*{Certifications}
+\BLOCK{for cert in certifications}
+\VAR{cert.name|latex} --- \VAR{cert.issuer|latex} (\VAR{cert.date})\\
 \BLOCK{endfor}
 \BLOCK{endif}
 

@@ -1,7 +1,19 @@
 education:
-  - id: edu-sample-university
+  - id: edu-especializacion-analitica
     tags: [education]
-    name: {es: "Universidad de Ejemplo", en: "Sample University"}
-    degree: {es: "Ingeniería en Sistemas", en: "Systems Engineering"}
-    start_date: "2016-01"
-    end_date: "2021-12"
+    name: {es: "Corporación Unificada Nacional de Educación Superior (CUN)", en: "Corporación Unificada Nacional de Educación Superior (CUN)"}
+    degree: {es: "Especialización en Analítica de Datos (en curso)", en: "Specialization in Data Analytics (in progress)"}
+    start_date: "2025-01"
+    end_date: "present"
+  - id: edu-diplomado-power-bi
+    tags: [education]
+    name: {es: "Uniremington Montería", en: "Uniremington Montería"}
+    degree: {es: "Diplomado en Inteligencia de Negocios con Power BI", en: "Diploma in Business Intelligence with Power BI"}
+    start_date: "2025-02"
+    end_date: "2025-04"
+  - id: edu-ingenieria-industrial
+    tags: [education]
+    name: {es: "Universidad de Córdoba", en: "Universidad de Córdoba"}
+    degree: {es: "Ingeniería Industrial", en: "Industrial Engineering"}
+    start_date: "2019-01"
+    end_date: "2024-12"

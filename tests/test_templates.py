@@ -25,6 +25,11 @@ def _context() -> dict:
         "lang": "es",
         "company": "Sample Company",
         "role_applied": "Backend Engineer",
+        "name": "Jane Doe",
+        "title": "Desarrolladora Backend",
+        "email": "jane@example.com",
+        "phone": "000-000-0000",
+        "summary": "Resumen de perfil de ejemplo.",
         "experience": [
             {
                 "company": "Empresa de Ejemplo",
@@ -83,6 +88,20 @@ def test_real_ats_template_renders_education_and_projects():
     assert "Ingeniería en Sistemas" in result
     assert "Universidad de Ejemplo" in result
     assert "Una descripción." in result
+
+
+@pytest.mark.parametrize("template_name", ["ats.tex.j2", "visual.tex.j2"])
+def test_real_template_separates_multiple_education_entries_with_linebreak(template_name):
+    context = _context()
+    context["education"] = [
+        {"name": "Universidad A", "degree": "Grado A"},
+        {"name": "Universidad B", "degree": "Grado B"},
+    ]
+
+    result = render_template(TEMPLATES_DIR, template_name, context)
+
+    assert r"Grado A --- Universidad A\\" in result
+    assert r"Grado B --- Universidad B\\" in result
 
 
 def test_real_visual_template_renders_certification_badge():
