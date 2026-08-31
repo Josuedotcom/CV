@@ -23,6 +23,7 @@ jobs:
           python-version: "3.11"
       - run: uv sync
       - run: uv run python -m scripts.validate
+      - run: uv run pytest
 
   build:
     needs: validate
