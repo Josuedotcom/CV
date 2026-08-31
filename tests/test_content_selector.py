@@ -39,6 +39,54 @@ def test_select_bullets_respects_max_count():
     assert len(result) == 2
 
 
+def test_select_bullets_forced_include_survives_max_count_truncation():
+    # The forced-include sits last in source order, behind enough tag matches to
+    # fill max_count: truncation must never drop an explicit override.
+    items = [
+        _item("a", ["backend"]),
+        _item("b", ["backend"]),
+        _item("c", ["backend"]),
+        _item("forced", ["frontend"]),
+    ]
+
+    result = select_bullets(
+        items,
+        tag_filter=["backend"],
+        max_count=2,
+        overrides={"include_bullets": ["forced"]},
+    )
+
+    ids = [i["id"] for i in result]
+    assert "forced" in ids
+    assert len(result) == 2
+
+
+def test_select_bullets_max_count_smaller_than_forced_includes_keeps_all_forced():
+    items = [_item("a", ["backend"]), _item("f1", ["frontend"]), _item("f2", ["frontend"])]
+
+    result = select_bullets(
+        items,
+        tag_filter=["backend"],
+        max_count=1,
+        overrides={"include_bullets": ["f1", "f2"]},
+    )
+
+    assert [i["id"] for i in result] == ["f1", "f2"]
+
+
+def test_select_bullets_exclude_wins_over_include_override():
+    items = [_item("a", ["frontend"])]
+
+    result = select_bullets(
+        items,
+        tag_filter=["backend"],
+        max_count=None,
+        overrides={"include_bullets": ["a"], "exclude_bullets": ["a"]},
+    )
+
+    assert result == []
+
+
 def test_select_bullets_handles_null_tags_on_item():
     items = [{"id": "a", "tags": None, "text": {"es": "a", "en": "a"}}]
     result = select_bullets(items, tag_filter=["backend"], max_count=None, overrides={})

@@ -7,16 +7,22 @@ def select_bullets(
     excluded = set(overrides.get("exclude_bullets") or [])
     included_ids = set(overrides.get("include_bullets") or [])
 
-    selected = []
+    # Forced includes are an explicit user override, so they are never subject to
+    # max_count truncation; only tag-matched bullets are trimmed to fit around them.
+    forced = []
+    filtered = []
     for bullet in bullets:
         if bullet["id"] in excluded:
             continue
+        if bullet["id"] in included_ids:
+            forced.append(bullet)
+            continue
         matches_filter = tag_filter is None or bool(set(bullet.get("tags") or []) & set(tag_filter))
-        forced_include = bullet["id"] in included_ids
-        if matches_filter or forced_include:
-            selected.append(bullet)
+        if matches_filter:
+            filtered.append(bullet)
 
     if max_count is not None:
-        selected = selected[:max_count]
+        remaining = max(max_count - len(forced), 0)
+        filtered = filtered[:remaining]
 
-    return selected
+    return forced + filtered
