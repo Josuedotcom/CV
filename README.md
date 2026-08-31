@@ -70,12 +70,6 @@ uv run python -m scripts.generate <company>-<date>
 To generate just the `.tex` without needing LaTeX installed, use the `--no-compile` flag:
 
 ```bash
-make generate APP=<company>-<date> --no-compile
-```
-
-Or directly:
-
-```bash
 uv run python -m scripts.generate <company>-<date> --no-compile
 ```
 
