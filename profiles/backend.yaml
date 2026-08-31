@@ -1,0 +1,8 @@
+name: backend
+sections:
+  - type: experience
+    tag_filter: [backend]
+    max_bullets_per_entry: 4
+  - type: skills
+    tag_filter: [backend]
+  - type: education

@@ -1,0 +1,45 @@
+\documentclass[11pt]{article}
+\usepackage[margin=1in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{enumitem}
+\pagestyle{empty}
+
+\begin{document}
+
+\begin{center}
+{\Large \textbf{Your Name}}\\
+your.email@example.com
+\end{center}
+
+\BLOCK{if experience}
+\section*{Experience}
+\BLOCK{for role in experience}
+\textbf{\VAR{role.role}} --- \VAR{role.company} (\VAR{role.start_date} -- \VAR{role.end_date})
+\begin{itemize}[nosep]
+\BLOCK{for bullet in role.bullets}
+\item \VAR{bullet}
+\BLOCK{endfor}
+\end{itemize}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if skills}
+\section*{Skills}
+\VAR{skills|map(attribute='name')|join(', ')}
+\BLOCK{endif}
+
+\BLOCK{if education}
+\section*{Education}
+\BLOCK{for item in education}
+\VAR{item.degree} --- \VAR{item.name}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if projects}
+\section*{Projects}
+\BLOCK{for project in projects}
+\textbf{\VAR{project.name}}: \VAR{project.description}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\end{document}

@@ -1,0 +1,7 @@
+education:
+  - id: edu-sample-university
+    tags: [education]
+    name: {es: "Universidad de Ejemplo", en: "Sample University"}
+    degree: {es: "Ingeniería en Sistemas", en: "Systems Engineering"}
+    start_date: "2016-01"
+    end_date: "2021-12"

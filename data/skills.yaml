@@ -1,0 +1,4 @@
+skills:
+  - id: skill-python
+    tags: [backend]
+    name: {es: "Python", en: "Python"}
