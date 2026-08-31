@@ -144,5 +144,9 @@ def test_generate_certifications_section_resolves_lang_and_badge_path(tmp_path):
     tex_path = generate("acme-2026-01-01", repo_root=tmp_path, compile=False)
 
     content = tex_path.read_text(encoding="utf-8")
-    assert "assets/badges/aws.png" in content
+    # Badge image should use relative path (../../assets/badges/aws.png)
+    assert "../../assets/badges/aws.png" in content
+    # Verify no absolute paths are baked in
+    assert ":\\" not in content  # no Windows absolute path
+    assert "C:/" not in content  # no absolute path in posix form
     assert "AWS Solutions Architect" in content

@@ -61,10 +61,11 @@ def build_named_section(
         entry = {"name": resolve_lang(item.get("name"), lang)}
         for field in extra_fields or []:
             value = resolve_lang(item.get(field), lang)
-            # Convert badge_image paths to absolute paths for LaTeX compilation
+            # Convert badge_image paths to relative paths for LaTeX compilation
+            # App cv.tex is at repo_root/applications/<name>/cv.tex (2 levels below repo_root)
             # Use forward slashes for LaTeX compatibility on Windows
             if field == "badge_image" and value:
-                value = (repo_root / value).resolve().as_posix()
+                value = ("../../" + value).replace("\\", "/")
             entry[field] = value
         result.append(entry)
     return result
