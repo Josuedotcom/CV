@@ -14,10 +14,10 @@ your.email@example.com
 \BLOCK{if experience}
 \section*{Experience}
 \BLOCK{for role in experience}
-\textbf{\VAR{role.role}} --- \VAR{role.company} (\VAR{role.start_date} -- \VAR{role.end_date})
+\textbf{\VAR{role.role|latex}} --- \VAR{role.company|latex} (\VAR{role.start_date} -- \VAR{role.end_date})
 \begin{itemize}[nosep]
 \BLOCK{for bullet in role.bullets}
-\item \VAR{bullet}
+\item \VAR{bullet|latex}
 \BLOCK{endfor}
 \end{itemize}
 \BLOCK{endfor}
@@ -25,20 +25,20 @@ your.email@example.com
 
 \BLOCK{if skills}
 \section*{Skills}
-\VAR{skills|map(attribute='name')|join(', ')}
+\VAR{(skills|map(attribute='name')|join(', '))|latex}
 \BLOCK{endif}
 
 \BLOCK{if education}
 \section*{Education}
 \BLOCK{for item in education}
-\VAR{item.degree} --- \VAR{item.name}
+\VAR{item.degree|latex} --- \VAR{item.name|latex}
 \BLOCK{endfor}
 \BLOCK{endif}
 
 \BLOCK{if projects}
 \section*{Projects}
 \BLOCK{for project in projects}
-\textbf{\VAR{project.name}}: \VAR{project.description}
+\textbf{\VAR{project.name|latex}}: \VAR{project.description|latex}
 \BLOCK{endfor}
 \BLOCK{endif}
 
