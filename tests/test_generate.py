@@ -1,6 +1,8 @@
 import textwrap
 from pathlib import Path
 
+import pytest
+
 from scripts.generate import generate
 
 
@@ -85,6 +87,27 @@ def test_generate_raises_when_validation_fails(tmp_path):
         assert False, "expected RuntimeError"
     except RuntimeError as exc:
         assert "exp-acme-1" in str(exc)
+
+
+def test_generate_raises_on_unknown_section_type(tmp_path):
+    _write_repo(tmp_path)
+    # An unrecognised section type must fail loudly instead of silently
+    # dropping the whole section from the rendered CV.
+    (tmp_path / "profiles" / "backend.yaml").write_text(
+        textwrap.dedent(
+            """
+            name: backend
+            sections:
+              - type: experience
+                tag_filter: [backend]
+              - type: publications
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    with pytest.raises(ValueError, match="publications"):
+        generate("acme-2026-01-01", repo_root=tmp_path, compile=False)
 
 
 def test_generate_certifications_section_resolves_lang_and_badge_path(tmp_path):

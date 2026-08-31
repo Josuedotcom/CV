@@ -23,35 +23,40 @@ def flatten_bullets(experience_entries: list[dict]) -> list[dict]:
     return bullets
 
 
-def collect_all_ided_items(repo_root: Path) -> list[dict]:
+def collect_items_by_type(repo_root: Path) -> dict[str, list[dict]]:
+    """Map each profile section type to the items that section can select from."""
     experience = load_yaml_dir(repo_root / "data" / "experience")
-    bullets = flatten_bullets(experience)
-    skills = load_yaml_file(repo_root / "data" / "skills.yaml").get("skills") or []
-    projects = load_yaml_file(repo_root / "data" / "projects.yaml").get("projects") or []
-    education = load_yaml_file(repo_root / "data" / "education.yaml").get("education") or []
-    certifications = load_yaml_file(repo_root / "data" / "certifications.yaml").get(
-        "certifications"
-    ) or []
-    return bullets + skills + projects + education + certifications
+    return {
+        "experience": flatten_bullets(experience),
+        "skills": load_yaml_file(repo_root / "data" / "skills.yaml").get("skills") or [],
+        "projects": load_yaml_file(repo_root / "data" / "projects.yaml").get("projects") or [],
+        "education": load_yaml_file(repo_root / "data" / "education.yaml").get("education") or [],
+        "certifications": load_yaml_file(repo_root / "data" / "certifications.yaml").get(
+            "certifications"
+        ) or [],
+    }
+
+
+def collect_all_ided_items(repo_root: Path) -> list[dict]:
+    items_by_type = collect_items_by_type(repo_root)
+    return [item for items in items_by_type.values() for item in items]
 
 
 def run_validation(repo_root: Path) -> list[str]:
     errors: list[str] = []
-    all_items = collect_all_ided_items(repo_root)
+    items_by_type = collect_items_by_type(repo_root)
+    all_items = [item for items in items_by_type.values() for item in items]
 
     errors += check_unique_ids(all_items)
     errors += check_bilingual_fields(all_items, ["text", "name", "description", "degree"])
 
-    certifications = load_yaml_file(repo_root / "data" / "certifications.yaml").get(
-        "certifications"
-    ) or []
-    errors += check_badge_images_exist(certifications, repo_root)
+    errors += check_badge_images_exist(items_by_type["certifications"], repo_root)
 
     known_ids = {item["id"] for item in all_items if "id" in item}
 
     profiles = load_yaml_dir(repo_root / "profiles")
     for profile in profiles:
-        errors += check_tag_filters_match(profile, all_items)
+        errors += check_tag_filters_match(profile, items_by_type)
 
     applications_dir = repo_root / "applications"
     if applications_dir.is_dir():

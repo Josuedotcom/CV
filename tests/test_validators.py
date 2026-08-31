@@ -69,14 +69,14 @@ def test_check_override_ids_exist_handles_null_overrides_value():
 
 def test_check_tag_filters_match_passes_when_tag_present():
     profile = {"name": "backend", "sections": [{"type": "experience", "tag_filter": ["backend"]}]}
-    items = [{"id": "a", "tags": ["backend"]}]
-    assert check_tag_filters_match(profile, items) == []
+    items_by_type = {"experience": [{"id": "a", "tags": ["backend"]}]}
+    assert check_tag_filters_match(profile, items_by_type) == []
 
 
 def test_check_tag_filters_match_reports_zero_matches():
     profile = {"name": "backend", "sections": [{"type": "experience", "tag_filter": ["ghost-tag"]}]}
-    items = [{"id": "a", "tags": ["backend"]}]
-    errors = check_tag_filters_match(profile, items)
+    items_by_type = {"experience": [{"id": "a", "tags": ["backend"]}]}
+    errors = check_tag_filters_match(profile, items_by_type)
     assert len(errors) == 1
     assert "backend" in errors[0]
     assert "ghost-tag" in errors[0]
@@ -84,19 +84,45 @@ def test_check_tag_filters_match_reports_zero_matches():
 
 def test_check_tag_filters_match_ignores_sections_without_tag_filter():
     profile = {"name": "backend", "sections": [{"type": "education"}]}
-    assert check_tag_filters_match(profile, items=[]) == []
+    assert check_tag_filters_match(profile, items_by_type={}) == []
 
 
 def test_check_tag_filters_match_handles_null_sections():
     profile = {"name": "backend", "sections": None}
-    assert check_tag_filters_match(profile, items=[]) == []
+    assert check_tag_filters_match(profile, items_by_type={}) == []
 
 
 def test_check_tag_filters_match_handles_null_tags_on_item():
     profile = {"name": "backend", "sections": [{"type": "experience", "tag_filter": ["backend"]}]}
-    items = [{"id": "a", "tags": None}]
-    errors = check_tag_filters_match(profile, items)
+    items_by_type = {"experience": [{"id": "a", "tags": None}]}
+    errors = check_tag_filters_match(profile, items_by_type)
     assert len(errors) == 1
+
+
+def test_check_tag_filters_match_only_considers_items_of_the_sections_own_type():
+    # `architecture` exists on an experience bullet but on no skill: the skills
+    # section must still be reported, not silently pass on the cross-type match.
+    profile = {"name": "backend", "sections": [{"type": "skills", "tag_filter": ["architecture"]}]}
+    items_by_type = {
+        "experience": [{"id": "exp-a", "tags": ["architecture"]}],
+        "skills": [{"id": "skill-python", "tags": ["backend"]}],
+    }
+
+    errors = check_tag_filters_match(profile, items_by_type)
+
+    assert len(errors) == 1
+    assert "skills" in errors[0]
+    assert "architecture" in errors[0]
+
+
+def test_check_tag_filters_match_reports_unknown_section_type_as_zero_matches():
+    profile = {"name": "backend", "sections": [{"type": "publications", "tag_filter": ["backend"]}]}
+    items_by_type = {"experience": [{"id": "exp-a", "tags": ["backend"]}]}
+
+    errors = check_tag_filters_match(profile, items_by_type)
+
+    assert len(errors) == 1
+    assert "publications" in errors[0]
 
 
 def test_check_badge_images_exist_passes_when_file_present(tmp_path):

@@ -89,6 +89,52 @@ def test_run_validation_catches_unknown_override_id(tmp_path):
     assert any("ghost-id" in e for e in errors)
 
 
+def test_run_validation_catches_tag_filter_matching_only_another_section_type(tmp_path):
+    _write_minimal_repo(tmp_path)
+    # `architecture` is tagged on an experience bullet only — never on a skill.
+    (tmp_path / "data" / "experience" / "acme.yaml").write_text(
+        textwrap.dedent(
+            """
+            company: {es: Acme, en: Acme}
+            role: {es: Dev, en: Dev}
+            bullets:
+              - id: exp-acme-1
+                tags: [backend, architecture]
+                text: {es: Hola, en: Hello}
+            """
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "data" / "skills.yaml").write_text(
+        textwrap.dedent(
+            """
+            skills:
+              - id: skill-python
+                tags: [backend]
+                name: {es: Python, en: Python}
+            """
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "profiles" / "backend.yaml").write_text(
+        textwrap.dedent(
+            """
+            name: backend
+            sections:
+              - type: experience
+                tag_filter: [backend]
+              - type: skills
+                tag_filter: [architecture]
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    errors = run_validation(tmp_path)
+
+    assert any("skills" in e and "architecture" in e for e in errors), errors
+
+
 def test_run_validation_handles_null_skills_key(tmp_path):
     _write_minimal_repo(tmp_path)
     # `skills:` present but with no value parses as `{"skills": None}` in YAML.

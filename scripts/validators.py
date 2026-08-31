@@ -48,13 +48,17 @@ def check_override_ids_exist(application_config: dict, known_ids: set[str]) -> l
     return errors
 
 
-def check_tag_filters_match(profile: dict, items: list[dict]) -> list[str]:
+def check_tag_filters_match(profile: dict, items_by_type: dict[str, list[dict]]) -> list[str]:
     errors = []
-    profile_name = profile.get("name", profile.get("_source", "<unknown>"))
+    profile_name = profile.get("name") or profile.get("_source", "<unknown>")
     for section in profile.get("sections") or []:
         tag_filter = section.get("tag_filter")
         if not tag_filter:
             continue
+        # A tag_filter only ever selects items of the section's own type, so an
+        # unrelated type carrying the tag must not make the section look valid.
+        # An unrecognised type has no items at all (generate() reports that case).
+        items = items_by_type.get(section.get("type")) or []
         matches = any(set(item.get("tags") or []) & set(tag_filter) for item in items)
         if not matches:
             errors.append(

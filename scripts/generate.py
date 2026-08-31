@@ -98,6 +98,11 @@ def build_context(repo_root: Path, config: dict, profile: dict) -> dict:
                 repo_root, "certifications.yaml", "certifications", section, overrides, lang,
                 extra_fields=["issuer", "date", "badge_image"],
             )
+        else:
+            raise ValueError(
+                f"Unknown section type '{section_type}' in profile "
+                f"{profile.get('_source', '<unknown>')}"
+            )
     return {
         "lang": lang,
         "company": config.get("company"),
