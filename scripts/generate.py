@@ -120,8 +120,15 @@ def compile_pdf(tex_path: Path) -> None:
         text=True,
     )
     if result.returncode != 0:
-        log_tail = "\n".join(result.stdout.splitlines()[-40:])
-        raise RuntimeError(f"latexmk failed for {tex_path}:\n{log_tail}")
+        # LaTeX fatal errors often land on stderr only, so both streams are
+        # reported: dropping stderr hides the most useful failure information.
+        stdout_tail = "\n".join((result.stdout or "").splitlines()[-40:])
+        stderr_tail = "\n".join((result.stderr or "").splitlines()[-40:])
+        raise RuntimeError(
+            f"latexmk failed for {tex_path}:\n"
+            f"--- stdout (tail) ---\n{stdout_tail}\n"
+            f"--- stderr (tail) ---\n{stderr_tail}"
+        )
 
 
 def generate(application_name: str, repo_root: Path = REPO_ROOT, compile: bool = True) -> Path:

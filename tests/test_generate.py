@@ -3,7 +3,7 @@ from pathlib import Path
 
 import pytest
 
-from scripts.generate import generate, main
+from scripts.generate import compile_pdf, generate, main
 
 
 def _write_repo(root: Path) -> None:
@@ -173,6 +173,31 @@ def test_generate_certifications_section_resolves_lang_and_badge_path(tmp_path):
     assert ":\\" not in content  # no Windows absolute path
     assert "C:/" not in content  # no absolute path in posix form
     assert "AWS Solutions Architect" in content
+
+
+def test_compile_pdf_error_includes_both_stdout_and_stderr(monkeypatch, tmp_path):
+    # latexmk writes fatal errors to stderr; dropping that stream leaves whoever
+    # hits a compile failure with a useless message.
+    import subprocess
+
+    def fake_run(*args, **kwargs):
+        return subprocess.CompletedProcess(
+            args=args,
+            returncode=1,
+            stdout="latexmk log noise\nsome stdout detail",
+            stderr="Fatal error occurred, no output PDF file produced!",
+        )
+
+    monkeypatch.setattr("scripts.generate.subprocess.run", fake_run)
+    tex_path = tmp_path / "cv.tex"
+    tex_path.write_text("", encoding="utf-8")
+
+    with pytest.raises(RuntimeError) as excinfo:
+        compile_pdf(tex_path)
+
+    message = str(excinfo.value)
+    assert "some stdout detail" in message
+    assert "Fatal error occurred, no output PDF file produced!" in message
 
 
 def test_main_reports_non_runtime_errors_cleanly(monkeypatch, capsys):
