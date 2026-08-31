@@ -85,3 +85,64 @@ def test_generate_raises_when_validation_fails(tmp_path):
         assert False, "expected RuntimeError"
     except RuntimeError as exc:
         assert "exp-acme-1" in str(exc)
+
+
+def test_generate_certifications_section_resolves_lang_and_badge_path(tmp_path):
+    _write_repo(tmp_path)
+
+    # Create a minimal badge image file (1x1 transparent PNG)
+    (tmp_path / "assets" / "badges").mkdir(parents=True)
+    (tmp_path / "assets" / "badges" / "aws.png").write_bytes(
+        bytes.fromhex("89504e470d0a1a0a0000000d49484452000000010000000108060000001f15c4890000000a49444154785e6300010000050001e1a18f2a0000000049454e44ae426082")
+    )
+
+    (tmp_path / "data" / "certifications.yaml").write_text(
+        textwrap.dedent(
+            """
+            certifications:
+              - id: cert-aws
+                tags: [cloud]
+                name: {es: "AWS Solutions Architect", en: "AWS Solutions Architect"}
+                issuer: "Amazon Web Services"
+                date: "2023-05"
+                badge_image: assets/badges/aws.png
+            """
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "profiles" / "backend.yaml").write_text(
+        textwrap.dedent(
+            """
+            name: backend
+            sections:
+              - type: experience
+                tag_filter: [backend]
+              - type: certifications
+                tag_filter: [cloud]
+            """
+        ),
+        encoding="utf-8",
+    )
+    (tmp_path / "templates" / "visual.tex.j2").write_text(
+        r"\BLOCK{for cert in certifications}"
+        r"\includegraphics{\VAR{cert.badge_image}} \VAR{cert.name}"
+        r"\BLOCK{endfor}",
+        encoding="utf-8",
+    )
+    (tmp_path / "applications" / "acme-2026-01-01" / "config.yaml").write_text(
+        textwrap.dedent(
+            """
+            company: Acme
+            profile: backend
+            template: visual
+            lang: es
+            """
+        ),
+        encoding="utf-8",
+    )
+
+    tex_path = generate("acme-2026-01-01", repo_root=tmp_path, compile=False)
+
+    content = tex_path.read_text(encoding="utf-8")
+    assert "assets/badges/aws.png" in content
+    assert "AWS Solutions Architect" in content

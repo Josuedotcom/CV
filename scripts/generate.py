@@ -60,7 +60,12 @@ def build_named_section(
     for item in selected:
         entry = {"name": resolve_lang(item.get("name"), lang)}
         for field in extra_fields or []:
-            entry[field] = resolve_lang(item.get(field), lang)
+            value = resolve_lang(item.get(field), lang)
+            # Convert badge_image paths to absolute paths for LaTeX compilation
+            # Use forward slashes for LaTeX compatibility on Windows
+            if field == "badge_image" and value:
+                value = (repo_root / value).resolve().as_posix()
+            entry[field] = value
         result.append(entry)
     return result
 

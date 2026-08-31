@@ -1,1 +1,7 @@
-certifications: []
+certifications:
+  - id: cert-sample-cloud
+    tags: [backend]
+    name: {es: "Certificación de Ejemplo", en: "Sample Certification"}
+    issuer: "Sample Issuer"
+    date: "2023-05"
+    badge_image: assets/badges/sample-badge.png

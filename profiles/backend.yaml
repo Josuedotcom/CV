@@ -6,3 +6,5 @@ sections:
   - type: skills
     tag_filter: [backend]
   - type: education
+  - type: certifications
+    tag_filter: [backend]
