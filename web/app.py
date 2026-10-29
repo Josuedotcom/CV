@@ -13,6 +13,7 @@ without touching a terminal.
 import sys
 from pathlib import Path
 
+import yaml
 import streamlit as st
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
@@ -70,6 +71,73 @@ def main() -> None:
         st.error("No se encontraron plantillas en `templates/`.")
         st.stop()
 
+    # Paso 1: Perfil (data/profile.yaml) — con instrucciones claras
+    st.subheader("Paso 1: Crear tu perfil")
+    st.info("**Estilo sugerido:** nombre breve; título profesional; resumen 2-4 líneas bilingüe (`es` / `en`); email profesional. Ejemplo rápido: `Ana García / Analista de Datos / ejemplo@email.com`.")
+    with st.form("profile_form"):
+        p_name = st.text_input("Nombre completo", placeholder="Ej. Ana García")
+        p_title = st.text_input("Título profesional", placeholder="Ej. Analista de Datos")
+        p_email = st.text_input("Email", placeholder="ejemplo@email.com")
+        p_phone = st.text_input("Teléfono (opcional)", placeholder="+00 000 000 000")
+        p_summary = st.text_area("Resumen (2-4 líneas, bilingüe `es` / `en`)", placeholder="Ej. Ingeniero con experiencia en SQL y dashboards / Engineer with SQL and dashboard experience")
+        p_submit = st.form_submit_button("Guardar perfil")
+        if p_submit:
+            if not p_name or not p_title or not p_email:
+                st.error("Nombre, título y email son obligatorios.")
+            else:
+                import yaml
+                profile_path = REPO_ROOT / "data" / "profile.yaml"
+                profile_path.parent.mkdir(parents=True, exist_ok=True)
+                profile_path.write_text(
+                    yaml.dump({
+                        "name": {"es": p_name, "en": p_name},
+                        "title": {"es": p_title, "en": p_title},
+                        "email": p_email,
+                        "phone": p_phone or "",
+                        "summary": {"es": p_summary or "", "en": p_summary or ""},
+                    }, allow_unicode=True, sort_keys=False),
+                    encoding="utf-8",
+                )
+                st.success(f"Perfil guardado: {profile_path}")
+
+    # Paso 2: Experiencia (data/experience/*.yaml) — con instrucciones claras
+    st.subheader("Paso 2: Crear tu experiencia")
+    st.info("**Estilo sugerido:** empresa y rol breves; bullets con `id` único, `tags`, `text: {es, en}`. Menciona resultados cuantificables (`reduje tiempos 20%`). Ejemplo: `tags: [data-analyst]`, `text: {es: Creé dashboards, en: Built dashboards}`.")
+    with st.form("experience_form"):
+        e_company = st.text_input("Empresa", placeholder="Ej. Empresa Ejemplo")
+        e_role = st.text_input("Rol", placeholder="Ej. Analista de Datos")
+        e_start = st.text_input("Fecha de inicio (YYYY-MM-DD)", placeholder="2025-01-01")
+        e_end = st.text_input("Fecha de fin (opcional, YYYY-MM-DD)", placeholder="2025-12-31")
+        e_bullet_es = st.text_area("Experiencia — texto español", placeholder="Ej. Analicé datos con SQL; creé dashboards en Power BI.")
+        e_bullet_en = st.text_area("Experiencia — texto inglés", placeholder="Ej. Analyzed data with SQL; built Power BI dashboards.")
+        e_tags = st.text_input("Tags (separados por comas, ej. ejemplo, backend)", placeholder="ejemplo")
+        e_submit = st.form_submit_button("Guardar experiencia")
+        if e_submit:
+            if not e_company or not e_role or not e_start:
+                st.error("Empresa, rol y fecha de inicio son obligatorios.")
+            else:
+                safe_name = "".join(c if c.isalnum() or c == "-" else "-" for c in e_company.strip()).lower().replace(" ", "-")
+                exp_file = REPO_ROOT / "data" / "experience" / f"{safe_name}.yaml"
+                exp_file.parent.mkdir(parents=True, exist_ok=True)
+                tags = [t.strip() for t in e_tags.split(",") if t.strip()] or ["ejemplo"]
+                exp_file.write_text(
+                    yaml.dump({
+                        "company": {"es": e_company, "en": e_company},
+                        "role": {"es": e_role, "en": e_role},
+                        "start_date": e_start,
+                        "end_date": e_end or "",
+                        "bullets": [
+                            {
+                                "id": f"exp-{safe_name}-1",
+                                "tags": tags,
+                                "text": {"es": e_bullet_es, "en": e_bullet_en},
+                            }
+                        ],
+                    }, allow_unicode=True, sort_keys=False),
+                    encoding="utf-8",
+                )
+                st.success(f"Experiencia guardada: {exp_file}")
+
     mode = st.radio("¿Qué quieres hacer?", ["Crear nueva aplicación", "Usar una existente"], horizontal=True)
 
     app_name = None
@@ -82,6 +150,7 @@ def main() -> None:
             config = yaml.safe_load((APPS_DIR / app_name / "config.yaml").read_text(encoding="utf-8"))
     else:
         with st.form("new_app_form"):
+            st.info("**Estilo de aplicación:** empresa real; rol aplicado; perfil = el creado en Paso 1 (`ejemplo` o tu propio); plantilla `ats` (ATS) o `visual`; idioma `es`/`en`; nota opcional.")
             st.subheader("Datos de la aplicación")
             company = st.text_input("Empresa", placeholder="Ej. Acme Corp")
             role = st.text_input("Puesto solicitado", placeholder="Ej. Analista de Datos")
