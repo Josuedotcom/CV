@@ -26,10 +26,23 @@ def check_bilingual_fields(items: list[dict], field_names: list[str]) -> list[st
         source = item.get("_source", "<unknown>")
         for field_name in field_names:
             value = item.get(field_name)
-            if not isinstance(value, dict):
+            if value is None:
                 continue
+            if not isinstance(value, dict):
+                errors.append(
+                    f"Item '{item_id}' in {source} field '{field_name}' "
+                    f"no es un diccionario bilingual (es/en): {value!r}"
+                )
+                continue
+            for key in value:
+                if key not in ("es", "en"):
+                    errors.append(
+                        f"Item '{item_id}' in {source} field '{field_name}' "
+                        f"tiene una clave de idioma no soportada: '{key}' "
+                        f"(solo se permiten 'es' y 'en')"
+                    )
             for lang in ("es", "en"):
-                if not value.get(lang):
+                if lang not in value or not value[lang]:
                     errors.append(
                         f"Item '{item_id}' in {source} is missing '{lang}' "
                         f"text for field '{field_name}'"

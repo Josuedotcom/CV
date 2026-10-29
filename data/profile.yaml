@@ -1,9 +1,5 @@
-name: "Robert Josué Hernández Bautista"
-title:
-  es: "Ingeniero Industrial / Analista de Datos"
-  en: "Industrial Engineer / Data Analyst"
-email: "rjosuehernandezb@gmail.com"
-phone: "300 7318850"
-summary:
-  es: "Ingeniero Industrial con experiencia en análisis de datos, SQL, Power BI y Python, enfocado en la construcción de dashboards, análisis estadístico y modelos predictivos básicos para la toma de decisiones estratégicas. Con capacidad para comunicar hallazgos a públicos técnicos y no técnicos, y experiencia en proyectos de automatización de procesos y optimización de recursos."
-  en: "Industrial Engineer with experience in data analysis, SQL, Power BI, and Python, focused on building dashboards, statistical analysis, and basic predictive models to support strategic decision-making. Able to communicate findings to both technical and non-technical audiences, with experience in process automation and resource optimization projects."
+name: {es: Nombre Ejemplo, en: Example Name}
+title: {es: Título Ejemplo, en: Example Title}
+email: ejemplo@email.com
+phone: "+00 000 000 000"
+summary: {es: Resumen de ejemplo para un candidato genérico., en: Generic candidate summary for open-source users.}

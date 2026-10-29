@@ -1,0 +1,9 @@
+name: ejemplo
+sections:
+  - type: experience
+    tag_filter: [ejemplo]
+    max_bullets_per_entry: 2
+  - type: skills
+    max_items: 10
+  - type: education
+  - type: certifications

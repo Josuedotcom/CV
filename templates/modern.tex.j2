@@ -1,0 +1,81 @@
+\documentclass[11pt]{article}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage[margin=0.9in]{geometry}
+\usepackage[hidelinks]{hyperref}
+\usepackage{graphicx}
+\usepackage{enumitem}
+\usepackage{titlesec}
+\titleformat{\section}{\large\bfseries\color{gray}}{}{0em}{}[\titlerule]
+\pagestyle{empty}
+
+% Plantilla de ejemplo para contribuciones comunitarias.
+% Sigue la misma convención de variables que `ats.tex.j2` y `visual.tex.j2`.
+% Variables disponibles (según el profile/section seleccionado):
+%   name, title, email, phone, summary
+%   experience: lista de {role, company, start_date, end_date, bullets: [str]}
+%   skills:     lista de {name}
+%   projects:   lista de {name, description}
+%   education:  lista de {degree, name}
+%   certifications: lista de {name, issuer, date, badge_image}
+%   company, role_applied (del application config)
+% Usa el filtro |latex para escapar caracteres especiales de LaTeX.
+
+\begin{document}
+
+\begin{center}
+{\huge \textbf{\VAR{name|latex}}}\\[3pt]
+\VAR{title|latex}\\[2pt]
+\VAR{email|latex} \quad|\quad \VAR{phone|latex}
+\end{center}
+
+\vspace{4pt}
+
+\BLOCK{if summary}
+\section*{Resumen / Summary}
+\VAR{summary|latex}
+\BLOCK{endif}
+
+\BLOCK{if experience}
+\section*{Experiencia / Experience}
+\BLOCK{for role in experience}
+\textbf{\VAR{role.role|latex}} --- \VAR{role.company|latex} \hfill \VAR{role.start_date} -- \VAR{role.end_date}
+\begin{itemize}[leftmargin=*, nosep]
+\BLOCK{for bullet in role.bullets}
+\item \VAR{bullet|latex}
+\BLOCK{endfor}
+\end{itemize}
+\vspace{2pt}
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if certifications}
+\section*{Certificaciones / Certifications}
+\BLOCK{for cert in certifications}
+\BLOCK{if cert.badge_image}
+\includegraphics[height=0.6cm]{\VAR{cert.badge_image}}
+\BLOCK{endif}
+\textbf{\VAR{cert.name|latex}} --- \VAR{cert.issuer|latex} (\VAR{cert.date})\\
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if skills}
+\section*{Habilidades / Skills}
+\VAR{(skills|map(attribute='name')|join(', '))|latex}
+\BLOCK{endif}
+
+\BLOCK{if education}
+\section*{Educación / Education}
+\BLOCK{for item in education}
+\VAR{item.degree|latex} --- \VAR{item.name|latex}\\
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\BLOCK{if projects}
+\section*{Proyectos / Projects}
+\BLOCK{for project in projects}
+\textbf{\VAR{project.name|latex}}: \VAR{project.description|latex}\\
+\BLOCK{endfor}
+\BLOCK{endif}
+
+\end{document}

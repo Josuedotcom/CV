@@ -1,0 +1,8 @@
+company: {es: Empresa Ejemplo, en: Example Company}
+role: {es: Rol Ejemplo, en: Example Role}
+start_date: "2025-01-01"
+end_date: "2025-12-31"
+bullets:
+  - id: exp-ejemplo-1
+    tags: [ejemplo]
+    text: {es: Ejemplo de experiencia genérica para el repositorio abierto., en: Generic example experience for the open-source repo.}
