@@ -1,9 +1,0 @@
-name: data-analyst
-sections:
-  - type: experience
-    tag_filter: [data-analyst]
-    max_bullets_per_entry: 4
-  - type: skills
-    tag_filter: [data-analyst]
-  - type: education
-  - type: certifications
