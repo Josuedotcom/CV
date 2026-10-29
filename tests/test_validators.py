@@ -151,6 +151,42 @@ def test_check_badge_images_exist_reports_missing_file(tmp_path):
     assert "missing.png" in errors[0]
 
 
+def test_check_bilingual_fields_rejects_extra_lang_key(tmp_path):
+    items = [{"id": "a", "_source": "f.yaml", "text": {"es": "Hola", "en": "Hello", "pt": "Oi"}}]
+    errors = check_bilingual_fields(items, ["text"])
+    assert len(errors) == 1
+    assert "pt" in errors[0]
+    assert "a" in errors[0]
+
+
+def test_check_bilingual_fields_rejects_bare_string(tmp_path):
+    items = [{"id": "a", "_source": "f.yaml", "text": "Hola"}]
+    errors = check_bilingual_fields(items, ["text"])
+    assert len(errors) == 1
+    assert "no es un diccionario" in errors[0] or "dict" in errors[0]
+
+
+def test_check_bilingual_fields_rejects_empty_language(tmp_path):
+    items = [{"id": "a", "_source": "f.yaml", "text": {"es": "Hola", "en": ""}}]
+    errors = check_bilingual_fields(items, ["text"])
+    assert len(errors) == 1
+    assert "en" in errors[0]
+
+
+def test_check_application_config_valid_reports_missing_lang(tmp_path):
+    _write_config_deps(tmp_path)
+    config = {
+        "_source": "applications/acme/config.yaml",
+        "profile": "backend",
+        "template": "ats",
+    }
+
+    errors = check_application_config_valid(config, tmp_path)
+
+    assert len(errors) == 1
+    assert "lang" in errors[0]
+
+
 def test_check_badge_images_exist_ignores_certs_without_badge(tmp_path):
     certs = [{"id": "cert-no-badge"}]
     assert check_badge_images_exist(certs, tmp_path) == []

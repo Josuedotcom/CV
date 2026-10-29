@@ -85,3 +85,15 @@ uv run python -m scripts.generate <company>-<date> --no-compile
 Every push to `data/`, `profiles/`, `templates/`, or `applications/`
 runs validation. Changes under `applications/` also trigger a build job
 that compiles the affected PDFs and commits them back automatically.
+
+---
+
+## Open Source — Uso y contribución
+
+Este repositorio es de código abierto (licencia MIT). Puedes clonarlo, usarlo localmente y contribuir.
+
+- **Quickstart (para nuevos usuarios):** ver `QUICKSTART.md`.
+- **Web app local:** `streamlit run web/app.py` (ver `QUICKSTART.md`).
+- **Contribuciones y plantillas comunitarias:** ver `CONTRIBUTING.md` y `templates/modern.tex.j2` como referencia.
+- **Documentación técnica:** `docs/superpowers/specs/` y `docs/superpowers/plans/`.
+- **Tests y CI:** el proyecto mantiene 74 tests (`uv run pytest`) + validación (`make validate`). Toda contribución debe pasar ambos antes de ser aceptada.
