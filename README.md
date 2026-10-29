@@ -94,6 +94,7 @@ Este repositorio es de código abierto (licencia MIT). Puedes clonarlo, usarlo l
 
 - **Quickstart (para nuevos usuarios):** ver `QUICKSTART.md`.
 - **Web app local:** `streamlit run web/app.py` (ver `QUICKSTART.md`).
+- **Docker portable (sin instalar nada local):** `docker build -t cv-generator . && docker run -p 8501:8501 cv-generator`
 - **Contribuciones y plantillas comunitarias:** ver `CONTRIBUTING.md` y `templates/modern.tex.j2` como referencia.
 - **Documentación técnica:** `docs/superpowers/specs/` y `docs/superpowers/plans/`.
 - **Tests y CI:** el proyecto mantiene 74 tests (`uv run pytest`) + validación (`make validate`). Toda contribución debe pasar ambos antes de ser aceptada.

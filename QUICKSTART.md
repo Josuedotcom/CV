@@ -44,6 +44,15 @@ Se abrirá automáticamente en tu navegador (normalmente `http://localhost:8501`
 
 Tu aplicación queda guardada en `applications/<empresa>-<fecha>/` como registro histórico de lo que generaste.
 
+## Opción portable con Docker (sin instalar nada local)
+
+```bash
+docker build -t cv-generator .
+docker run -p 8501:8501 --rm cv-generator
+```
+
+Después abrí `http://localhost:8501`. El contenedor trae Python 3.11, Streamlit, MiKTeX/TeX Live (`latexmk`) y tu repo todo junto.
+
 ## ¿Qué sigue?
 
 - Edita `data/` para añadir tu experiencia, habilidades, educación, etc.
